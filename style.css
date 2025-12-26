@@ -195,7 +195,7 @@ button{
   justify-content:center;
   background:#000;
   color:#fff;
-  padding:10px 14px;
+  padding:11px 14px;
   border-radius:999px;
   font-family:'Noto Sans KR', sans-serif;
   font-size:12px;
@@ -211,7 +211,6 @@ button{
   color:#fff;
 }
 
-
 .otp-text{
   min-width:1ch;       /* 미입력 시 pill 유지용 */
   color:#000;
@@ -220,6 +219,7 @@ button{
   line-height:1;
   text-align:left;
   white-space:nowrap;
+  font-family:'Noto Sans KR', sans-serif;
   display:block;
 }
 
@@ -311,6 +311,7 @@ button{
   text-align:left;
   word-break:break-word;
 }
+
 
 
 

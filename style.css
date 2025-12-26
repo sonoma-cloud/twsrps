@@ -281,17 +281,17 @@ button{
 .sidecol .label{
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                Roboto, Helvetica, Arial, sans-serif;
-  font-size:12px;
+  font-size:13px;
   font-weight:700;
-  line-height:1.05;
+  line-height:1.1;
 }
 
 .sidecol .num{
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                Roboto, Helvetica, Arial, sans-serif;
-  font-size:12px;
+  font-size:13px;
   font-weight:600;   /* 애플 UI 숫자 느낌 */
-  line-height:1.05;
+  line-height:1.1;
 }
 
 /* 바 전체 */
@@ -328,6 +328,7 @@ button{
   text-align:left;
   word-break:break-word;
 }
+
 
 
 

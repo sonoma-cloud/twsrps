@@ -186,6 +186,7 @@ button{
   padding:10px 14px;
   border-radius:999px;
   font-family:'Noto Sans KR', sans-serif;
+  align-items:center;
 }
 
 /* ✅ 결과 OTP 표시 */
@@ -202,6 +203,7 @@ button{
   font-size:16px;
   font-weight:700;
   line-height:1;
+  align-items:center;
 }
 
 .otp-display .otp-tag{
@@ -318,6 +320,7 @@ button{
   text-align:left;
   word-break:break-word;
 }
+
 
 
 

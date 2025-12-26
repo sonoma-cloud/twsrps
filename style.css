@@ -212,7 +212,7 @@ button{
 }
 
 .otp-text{
-  color:#000;
+  color:#fff;
   font-weight:700;      /* ✅ 볼드 */
   font-size:16px;
   line-height:1;
@@ -310,6 +310,7 @@ button{
   text-align:left;
   word-break:break-word;
 }
+
 
 
 

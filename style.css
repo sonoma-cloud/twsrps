@@ -184,12 +184,12 @@ button{
 .sidecol{
   width:36px;
   text-align:center;
-  line-height:1.05;
+  line-height:1.1;
 }
 
 .sidecol .label{
   font-size:13px;
-  line-height:1.1;
+  line-height:1.05;
 }
 
 .sidecol .num{
@@ -232,6 +232,7 @@ button{
   text-align:left;
   word-break:break-word;
 }
+
 
 
 

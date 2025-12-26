@@ -182,7 +182,7 @@ button{
 .credit{
   background:#000;
   color:#fff;
-  font-size:10px;
+  font-size:12px;
   padding:10px 14px;
   border-radius:999px;
   font-family:'Noto Sans KR', sans-serif;
@@ -323,6 +323,7 @@ button{
   text-align:left;
   word-break:break-word;
 }
+
 
 
 

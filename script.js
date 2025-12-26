@@ -9,8 +9,8 @@ const members = [
 
 const STEP = 10;            // 10% 단위
 const FIXED_WIDTH = 50;     // 결과 바 길이 항상 50%
-const MAX_CHARS = 100;      // 입력 최대 글자수
-const TEXT_FONT_PX = 20;    // 결과 텍스트 폰트 고정
+const MAX_CHARS = 100;      // 입력 최대 글자수(한글 100자 기준)
+const TEXT_FONT_PX = 20;    // 결과 텍스트 폰트 고정(잘리게)
 const CAPTURE_W = 1200;
 const CAPTURE_H = 900;
 
@@ -28,7 +28,7 @@ members.forEach((m, i) => {
 
       <div class="range-row">
         <span class="side">공 <b id="gPct${i}">50%</b></span>
-        <input type="range" min="0" max="100" value="50" step="${STEP}" id="range${i}">
+        <input type="range" min="0" max="100" value="50" step="${STEP}" id="range${i}" aria-label="${m.name} 공수 비율">
         <span class="side">수 <b id="sPct${i}">50%</b></span>
       </div>
 
@@ -36,6 +36,7 @@ members.forEach((m, i) => {
     </div>
   `);
 
+  // ✅ 결과 카드에 숫자 표시 영역 추가 (공/수 라벨 아래 숫자)
   resultList.insertAdjacentHTML("beforeend", `
     <div class="card">
       <img src="${m.img}" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -62,7 +63,7 @@ members.forEach((m, i) => {
   `);
 });
 
-// ====== 입력 슬라이더 실시간 표시 ======
+// ====== 입력 슬라이더 실시간 표시(좌/우 퍼센트) ======
 members.forEach((_, i) => {
   const r = document.getElementById(`range${i}`);
   const gPct = document.getElementById(`gPct${i}`);
@@ -80,14 +81,14 @@ members.forEach((_, i) => {
   sync();
 });
 
-// ====== 결과 텍스트 고정 ======
+// ====== 결과 텍스트: 폰트 고정 + 넘치면 잘리게 ======
 function setTextClamped(el, text) {
   el.textContent = text || " ";
   el.style.fontSize = `${TEXT_FONT_PX}px`;
   el.style.overflow = "hidden";
 }
 
-// ====== 프리뷰 축소 ======
+// ====== 프리뷰 축소(화면에서만) ======
 function updatePreviewScale() {
   const preview = document.getElementById("preview");
   const capture = document.getElementById("capture");
@@ -106,22 +107,11 @@ window.addEventListener("resize", () => {
 
 // ====== 결과 생성 ======
 function generate() {
-
-  /* ===== OTP 반영 + 비어있으면 숨김 ===== */
+  // ✅ OTP 반영
   const otpIn = document.getElementById("otpIn");
   const otpOut = document.getElementById("otpOut");
-  const otpWrap = document.querySelector(".otp-display");
-
   const otpText = (otpIn?.value || "").trim().slice(0, 8);
-
-  if (otpText) {
-    if (otpOut) otpOut.textContent = otpText;
-    if (otpWrap) otpWrap.style.display = "flex";
-  } else {
-    if (otpOut) otpOut.textContent = "";
-    if (otpWrap) otpWrap.style.display = "none";
-  }
-  /* ===================================== */
+  if (otpOut) otpOut.textContent = otpText;
 
   members.forEach((_, i) => {
     const r = document.getElementById(`range${i}`);
@@ -132,19 +122,26 @@ function generate() {
     const s = 100 - g;
 
     // 입력 퍼센트 재동기화
-    document.getElementById(`gPct${i}`).textContent = `${g}%`;
-    document.getElementById(`sPct${i}`).textContent = `${s}%`;
+    const gPct = document.getElementById(`gPct${i}`);
+    const sPct = document.getElementById(`sPct${i}`);
+    if (gPct && sPct) {
+      gPct.textContent = `${g}%`;
+      sPct.textContent = `${s}%`;
+    }
 
-    // 결과 숫자
-    document.getElementById(`gNum${i}`).textContent = g;
-    document.getElementById(`sNum${i}`).textContent = s;
+    // ✅ 결과 숫자(퍼센트 없이 숫자만)
+    const gNum = document.getElementById(`gNum${i}`);
+    const sNum = document.getElementById(`sNum${i}`);
+    if (gNum) gNum.textContent = String(g);
+    if (sNum) sNum.textContent = String(s);
 
-    // 결과 바 위치
+    // ✅ 결과 바: 길이 고정 50% + 위치만 이동
     const bar = document.getElementById(`bar${i}`);
+    const left = (100 - g) / 2;
     bar.style.width = `${FIXED_WIDTH}%`;
-    bar.style.left = `${(100 - g) / 2}%`;
+    bar.style.left = `${left}%`;
 
-    // 텍스트 반영
+    // 텍스트 반영 (고정 + 넘치면 잘림)
     const raw = (document.getElementById(`text${i}`).value || "").slice(0, MAX_CHARS);
     setTextClamped(document.getElementById(`resultText${i}`), raw);
   });
@@ -156,10 +153,11 @@ function generate() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// ====== 저장 ======
+// ====== 저장: 1200x900 고정 ======
 function saveImage() {
   const capture = document.getElementById("capture");
 
+  // 프리뷰 transform 제거하고 캡처 (모바일에서 왼쪽 위 작게 찍히는 문제 방지)
   const prevTransform = capture.style.transform;
   const prevOrigin = capture.style.transformOrigin;
   capture.style.transform = "none";
@@ -173,6 +171,7 @@ function saveImage() {
     width: CAPTURE_W,
     height: CAPTURE_H,
     windowWidth: CAPTURE_W,
+    height: CAPTURE_H,
     windowHeight: CAPTURE_H
   }).then((canvas) => {
     const out = document.createElement("canvas");
@@ -194,6 +193,9 @@ function saveImage() {
     a.href = out.toDataURL("image/png");
     a.download = "twsrps.png";
     a.click();
+  }).catch((err) => {
+    alert("이미지 저장 실패: CORS 또는 렌더링 문제일 수 있어요.");
+    console.error(err);
   }).finally(() => {
     capture.style.transform = prevTransform;
     capture.style.transformOrigin = prevOrigin;

@@ -213,6 +213,12 @@ button{
   line-height:1;
 }
 
+.otp-display, .otp-text{
+  line-height:16px;          /* font-size(16)와 동일하게 고정 */
+  display:flex;
+  align-items:center;        /* 수직 중앙 고정 */
+}
+
 .otp-text{
   font-family:'Noto Sans KR', sans-serif;
   font-size:16px;      /* ✅ 텍스트도 16 */
@@ -220,6 +226,8 @@ button{
   color:#000;          /* ✅ 블랙 */
   line-height:1;
   white-space:nowrap;
+  position: relative;
+  top: -1px; 
 }
 
 
@@ -310,6 +318,7 @@ button{
   text-align:left;
   word-break:break-word;
 }
+
 
 
 

@@ -157,47 +157,64 @@ function generate() {
 function saveImage() {
   const capture = document.getElementById("capture");
 
-  // 프리뷰 transform 제거하고 캡처 (모바일에서 왼쪽 위 작게 찍히는 문제 방지)
+  // ✅ 캡처 직전에 OTP 값 강제 반영(화면/클론 모두 대비)
+  const otpIn = document.getElementById("otpIn");
+  const otpOut = document.getElementById("otpOut");
+  const otpText = (otpIn?.value || "").trim().slice(0, 8);
+  if (otpOut) otpOut.textContent = otpText;
+
+  // 프리뷰 transform 제거하고 캡처
   const prevTransform = capture.style.transform;
   const prevOrigin = capture.style.transformOrigin;
   capture.style.transform = "none";
   capture.style.transformOrigin = "top left";
 
-  html2canvas(capture, {
-    scale: 1,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: "#fff",
-    width: CAPTURE_W,
-    height: CAPTURE_H,
-    windowWidth: CAPTURE_W,
-    height: CAPTURE_H,
-    windowHeight: CAPTURE_H
-  }).then((canvas) => {
-    const out = document.createElement("canvas");
-    out.width = CAPTURE_W;
-    out.height = CAPTURE_H;
-    const ctx = out.getContext("2d");
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, out.width, out.height);
+  // ✅ 레이아웃 갱신 후 캡처(이게 진짜 중요)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      html2canvas(capture, {
+        scale: 1,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#fff",
+        width: CAPTURE_W,
+        height: CAPTURE_H,
+        windowWidth: CAPTURE_W,
+        windowHeight: CAPTURE_H,
 
-    const scale = Math.min(out.width / canvas.width, out.height / canvas.height);
-    const dw = canvas.width * scale;
-    const dh = canvas.height * scale;
-    const dx = (out.width - dw) / 2;
-    const dy = (out.height - dh) / 2;
+        // ✅ html2canvas가 만드는 "클론 DOM"에도 OTP 텍스트 주입
+        onclone: (clonedDoc) => {
+          const clonedOtpOut = clonedDoc.getElementById("otpOut");
+          if (clonedOtpOut) clonedOtpOut.textContent = otpText;
+        }
+      }).then((canvas) => {
+        const out = document.createElement("canvas");
+        out.width = CAPTURE_W;
+        out.height = CAPTURE_H;
+        const ctx = out.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, out.width, out.height);
 
-    ctx.drawImage(canvas, dx, dy, dw, dh);
+        const scale = Math.min(out.width / canvas.width, out.height / canvas.height);
+        const dw = canvas.width * scale;
+        const dh = canvas.height * scale;
+        const dx = (out.width - dw) / 2;
+        const dy = (out.height - dh) / 2;
 
-    const a = document.createElement("a");
-    a.href = out.toDataURL("image/png");
-    a.download = "twsrps.png";
-    a.click();
-  }).catch((err) => {
-    alert("이미지 저장 실패: CORS 또는 렌더링 문제일 수 있어요.");
-    console.error(err);
-  }).finally(() => {
-    capture.style.transform = prevTransform;
-    capture.style.transformOrigin = prevOrigin;
+        ctx.drawImage(canvas, dx, dy, dw, dh);
+
+        const a = document.createElement("a");
+        a.href = out.toDataURL("image/png");
+        a.download = "twsrps.png";
+        a.click();
+      }).catch((err) => {
+        alert("이미지 저장 실패: 렌더링 문제일 수 있어요.");
+        console.error(err);
+      }).finally(() => {
+        capture.style.transform = prevTransform;
+        capture.style.transformOrigin = prevOrigin;
+      });
+    });
   });
 }
+

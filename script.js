@@ -32,7 +32,7 @@ members.forEach((m, i) => {
         <span class="side">수 <b id="sPct${i}">50%</b></span>
       </div>
 
-      <textarea id="text${i}" placeholder="텍스트 입력 (최대85자)" maxlength="${MAX_CHARS}"></textarea>
+      <textarea id="text${i}" placeholder="텍스트 입력 (최대100자)" maxlength="${MAX_CHARS}"></textarea>
     </div>
   `);
 
@@ -217,6 +217,7 @@ async function saveImage() {
     capture.style.transformOrigin = prevOrigin;
   }
 }
+
 
 
 

@@ -36,6 +36,25 @@ members.forEach((m, i) => {
     </div>
   `);
 
+  members.forEach((_, i) => {
+  const ta = document.getElementById(`text${i}`);
+
+  ta.addEventListener("input", () => {
+    if (ta.value.length > MAX_CHARS) {
+      // 초과분 컷
+      ta.value = ta.value.slice(0, MAX_CHARS);
+
+      // 시각적 피드백
+      ta.classList.add("text-limit", "shake");
+
+      // 효과 제거
+      setTimeout(() => {
+        ta.classList.remove("text-limit", "shake");
+      }, 500);
+    }
+  });
+});
+
   // ✅ 결과 카드에 숫자 표시 영역 추가 (공/수 라벨 아래 숫자)
   resultList.insertAdjacentHTML("beforeend", `
     <div class="card">
@@ -217,6 +236,7 @@ async function saveImage() {
     capture.style.transformOrigin = prevOrigin;
   }
 }
+
 
 
 
